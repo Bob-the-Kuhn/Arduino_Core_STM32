@@ -269,6 +269,8 @@ void SystemCoreClockUpdate (void)
   */
 void SystemInit_ExtMemCtl(void)
 {
+  __IO uint32_t tmpreg = 0;
+
   /* Flash 1 wait state */
   FLASH->ACR |= FLASH_ACR_LATENCY;
 
@@ -276,7 +278,7 @@ void SystemInit_ExtMemCtl(void)
   RCC->APB1ENR |= RCC_APB1ENR_PWREN;
 
   /* Delay after an RCC peripheral clock enabling */
-  READ_BIT(RCC->APB1ENR, RCC_APB1ENR_PWREN);
+  tmpreg = READ_BIT(RCC->APB1ENR, RCC_APB1ENR_PWREN);
 
   /* Select the Voltage Range 1 (1.8 V) */
   PWR->CR = PWR_CR_VOS_0;
@@ -310,7 +312,7 @@ void SystemInit_ExtMemCtl(void)
   RCC->AHBENR   = 0x000080D8;
 
   /* Delay after an RCC peripheral clock enabling */
-  READ_BIT(RCC->AHBENR, RCC_AHBENR_GPIODEN);
+  tmpreg = READ_BIT(RCC->AHBENR, RCC_AHBENR_GPIODEN);
 
   /* Connect PDx pins to FSMC Alternate function */
   GPIOD->AFR[0]  = 0x00CC00CC;
@@ -365,7 +367,9 @@ void SystemInit_ExtMemCtl(void)
   RCC->AHBENR    = 0x400080D8;
 
   /* Delay after an RCC peripheral clock enabling */
-  READ_BIT(RCC->AHBENR, RCC_AHBENR_FSMCEN);
+  tmpreg = READ_BIT(RCC->AHBENR, RCC_AHBENR_FSMCEN);
+
+  (void)(tmpreg);
 
   /* Configure and enable Bank1_SRAM3 */
   FSMC_Bank1->BTCR[4]  = 0x00001011;
